@@ -16,7 +16,7 @@ require (
 	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/aws/aws-sdk-go v1.30.25
-	github.com/crphang/orc v0.0.3
+	github.com/crphang/orc v0.0.6
 	github.com/dgraph-io/badger/v2 v2.0.1-rc1.0.20200626160443-3042e3776798
 	github.com/dgraph-io/ristretto v0.0.2 // indirect
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
