@@ -43,6 +43,8 @@ const (
 )
 
 func main() {
+
+	// test
 	eorc.DefaultCompressionChunkSize = 16 * eorc.DefaultCompressionChunkSize
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
