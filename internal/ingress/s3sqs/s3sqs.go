@@ -71,7 +71,7 @@ func NewWith(reader Reader, loader Downloader, monitor monitor.Monitor) *Ingress
 
 // Range iterates through the queue, stops only if Close() is called or the f callback
 // returns true.
-func (s *Ingress) Range(f func(v []byte) bool) {
+func (s *Ingress) Range(f func(v string) bool) {
 
 	// Create a cancellation context
 	ctx, cancel := context.WithCancel(context.Background())
@@ -83,7 +83,7 @@ func (s *Ingress) Range(f func(v []byte) bool) {
 }
 
 // drains files from SQS
-func (s *Ingress) drain(ctx context.Context, queue <-chan *awssqs.Message, handler func(v []byte) bool) {
+func (s *Ingress) drain(ctx context.Context, queue <-chan *awssqs.Message, handler func(v string) bool) {
 	const tag = "drain"
 	for {
 		select {
@@ -140,20 +140,15 @@ func (s *Ingress) acknowledge(msg *awssqs.Message) error {
 
 // Ingest downloads an object from S3 and applies a handler to the downloaded
 // payload. Few of these can be executed in parallel.
-func (s *Ingress) ingest(bucket, key string, handler func(v []byte) bool) {
+func (s *Ingress) ingest(bucket, key string, handler func(v string) bool) {
 	defer s.monitor.Duration(ctxTag, "s3sqs", time.Now())
-
-	data, err := s.loader.Load(context.Background(), fmt.Sprintf("s3://%s/%s", bucket, key))
+	ingestURL := fmt.Sprintf("s3://%s/%s", bucket, key)
 	defer s.limit.Release(1)
-	if err != nil {
-		s.monitor.Error(err)
-		return
-	}
 
 	//s.monitor.Info("sqs: downloading %v", key)
 
 	// Call the handler
-	_ = handler(data)
+	_ = handler(ingestURL)
 }
 
 // Close stops consuming

@@ -137,9 +137,9 @@ func (s *Server) pollFromSQS(conf *config.Config) (err error) {
 
 	// Start ingesting
 	s.monitor.Info("server: starting ingestion from S3/SQS...")
-	s.s3sqs.Range(func(v []byte) bool {
+	s.s3sqs.Range(func(v string) bool {
 		if _, err := s.Ingest(context.Background(), &talaria.IngestRequest{
-			Data: &talaria.IngestRequest_Orc{Orc: v},
+			Data: &talaria.IngestRequest_Url{Url: v},
 		}); err != nil {
 			s.monitor.Warning(err)
 		}

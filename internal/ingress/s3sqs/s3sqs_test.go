@@ -39,8 +39,13 @@ func TestQueueReader(t *testing.T) {
 	// Range until we're done
 	var wg sync.WaitGroup
 	wg.Add(1)
-	storage.Range(func(v []byte) bool {
-		assert.Equal(t, orc, v)
+	storage.Range(func(v string) bool {
+		data, err := s3.Load(context.Background(), v)
+		if err != nil {
+			return false
+		}
+
+		assert.Equal(t, orc, data)
 		wg.Done()
 		return true
 	})
